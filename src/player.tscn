@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bp5o36i471bmm"]
+
+[ext_resource type="Script" uid="uid://b5y8bhphpv6m8" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="Texture2D" uid="uid://cuts28j2giely" path="res://assets/ship_idle.png" id="2_onrkg"]
+
+[node name="World" type="Node2D" unique_id=1566183032]
+
+[node name="Player" type="Node2D" parent="." unique_id=350543370]
+script = ExtResource("1_4flbx")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=405194854]
+rotation = 1.5707964
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_onrkg")
+offset = Vector2(0, 260)
