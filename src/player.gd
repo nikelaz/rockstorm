@@ -1,10 +1,8 @@
 extends Area2D
 
-const SHIP_IDLE = preload("res://assets/ship_idle.png")
-const SHIP_BURNING = preload("res://assets/ship_burning.png")
 const BULLET_SCENE = preload("res://src/bullet.tscn")
 
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var engine_exhaust: GPUParticles2D = $EngineExhaust
 
 @export var rotation_rate: float = 3.5
 @export var acceleration: float = 250.0
@@ -21,16 +19,16 @@ func rotate_with_input(delta: float) -> void:
 	rotation += left_right_axis * rotation_rate * delta
 
 func handle_acceleration(delta: float) -> void:
-	if Input.is_action_pressed("ui_up"):
+	var thrusting := Input.is_action_pressed("ui_up")
+	engine_exhaust.emitting = thrusting
+	if thrusting:
 		var direction = Vector2.RIGHT.rotated(rotation)
 		velocity += direction * acceleration * delta
-		sprite.texture = SHIP_BURNING
 	else:
 		velocity = velocity.move_toward(
 			Vector2.ZERO,
 			deceleration * delta
 		)
-		sprite.texture = SHIP_IDLE
 
 func update_position(delta: float) -> void:
 	var new_position = position + (velocity * delta)

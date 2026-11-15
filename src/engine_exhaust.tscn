@@ -1,0 +1,58 @@
+[gd_scene format=3]
+
+[sub_resource type="Gradient" id="Gradient_exhaust"]
+offsets = PackedFloat32Array(0, 0.2, 0.55, 1)
+colors = PackedColorArray(1, 0.98, 0.8, 1, 1, 0.8, 0.12, 0.9, 1, 0.25, 0.03, 0.55, 0.85, 0.03, 0.18, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_exhaust"]
+gradient = SubResource("Gradient_exhaust")
+
+[sub_resource type="Curve" id="Curve_exhaust"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_exhaust"]
+curve = SubResource("Curve_exhaust")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_exhaust"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1, 8, 0)
+direction = Vector3(-1, 0, 0)
+spread = 12.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 90.0
+initial_velocity_max = 150.0
+scale_min = 0.15
+scale_max = 0.3
+scale_curve = SubResource("CurveTexture_exhaust")
+color_ramp = SubResource("GradientTexture1D_exhaust")
+
+[sub_resource type="Gradient" id="Gradient_particle"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.7, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_particle"]
+gradient = SubResource("Gradient_particle")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_exhaust"]
+blend_mode = 1
+
+[node name="EngineExhaust" type="GPUParticles2D"]
+show_behind_parent = true
+position = Vector2(-44, 0)
+material = SubResource("CanvasItemMaterial_exhaust")
+emitting = false
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_exhaust")
+texture = SubResource("GradientTexture2D_particle")
+lifetime = 0.42
+randomness = 0.25
+visibility_rect = Rect2(-120, -40, 150, 80)
+local_coords = true
+

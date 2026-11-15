@@ -3,12 +3,33 @@
 [ext_resource type="Script" uid="uid://c8k32w0frcnar" path="res://src/bullet.gd" id="1_l4h0r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_stymg"]
-radius = 5.0
+radius = 3.0
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+offsets = PackedFloat32Array(0, 0.25, 0.6, 1)
+colors = PackedColorArray(1, 0.9, 0.15, 0.85, 1, 0.75, 0.05, 0.5, 1, 0.55, 0, 0.12, 1, 0.45, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_glow")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_glow"]
+blend_mode = 1
 
 [node name="Bullet" type="Area2D" unique_id=812785524]
 collision_layer = 2
 collision_mask = 4
 script = ExtResource("1_l4h0r")
+
+[node name="Glow" type="Sprite2D" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_glow")
+scale = Vector2(0.375, 0.375)
+texture = SubResource("GradientTexture2D_glow")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=599912814]
 shape = SubResource("CircleShape2D_stymg")

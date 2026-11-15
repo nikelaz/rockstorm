@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://gw2u36c3d1kb" path="res://src/world.gd" id="1_fj7yv"]
 [ext_resource type="Texture2D" uid="uid://cuts28j2giely" path="res://assets/ship_idle.png" id="3_0qwtu"]
 [ext_resource type="Texture2D" uid="uid://ucvqgvfv2d2h" path="res://assets/background_space.png" id="4_t101k"]
+[ext_resource type="PackedScene" path="res://src/engine_exhaust.tscn" id="5_exhaust"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_stymg"]
 radius = 19.0
@@ -37,6 +38,10 @@ rotation = 1.5707964
 scale = Vector2(0.06, 0.06)
 texture = ExtResource("3_0qwtu")
 offset = Vector2(0, 235)
+
+[node name="EngineExhaust" parent="Player" unique_id=1341257224 instance=ExtResource("5_exhaust")]
+position = Vector2(-25, 0)
+scale = Vector2(0.6, 0.6)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1492218921]
 position = Vector2(-4, 0)
