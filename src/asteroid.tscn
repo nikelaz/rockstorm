@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b14dex6qds2md"]
+
+[ext_resource type="Script" uid="uid://crl33csvvlv2w" path="res://src/asteroid.gd" id="1_gpy83"]
+
+[node name="Asteroid" type="Area2D" unique_id=555770795]
+script = ExtResource("1_gpy83")

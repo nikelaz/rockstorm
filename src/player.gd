@@ -2,6 +2,7 @@ extends Node2D
 
 const SHIP_IDLE = preload("res://assets/ship_idle.png")
 const SHIP_BURNING = preload("res://assets/ship_burning.png")
+const BULLET_SCENE = preload("res://src/bullet.tscn")
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -37,7 +38,24 @@ func update_position(delta: float) -> void:
 	new_position.y = clampf(new_position.y, 20.0, viewport_size.y - 20.0)
 	position = new_position
 
+func shoot() -> void:
+	var bullet = BULLET_SCENE.instantiate()
+
+	get_parent().add_child(bullet)
+
+	var direction = Vector2.RIGHT.rotated(global_rotation)
+
+	bullet.global_position = global_position + direction * 25.0
+	bullet.global_rotation = global_rotation
+
+func handle_shooting():
+	if Input.is_action_just_pressed("shoot"):
+		shoot()
+
 func _physics_process(delta: float) -> void:
 	rotate_with_input(delta)
 	handle_acceleration(delta)
 	update_position(delta)
+
+func _process(delta: float) -> void:
+	handle_shooting()
