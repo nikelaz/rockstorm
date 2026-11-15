@@ -4,6 +4,7 @@ extends Area2D
 signal destroyed(points: int)
 
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
+const EXPLOSION = preload("res://src/asteroid_explosion.gd")
 const IMAGE_ASTEROID_LARGE = preload("res://assets/asteroid_large.png")
 
 const IMAGES_ASTEROID_SMALL = [
@@ -63,6 +64,13 @@ func hit(award_points: bool = true) -> void:
 		return
 
 	already_hit = true
+	var explosion = EXPLOSION.new()
+	explosion.fiery = award_points
+	explosion.large = not small
+	explosion.position = position
+	explosion.drift = velocity * 0.15
+	# Hits can arrive during physics queries; add the effect after they finish.
+	get_parent().add_child.call_deferred(explosion)
 	if award_points:
 		destroyed.emit(10 if small else 20)
 
