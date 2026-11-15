@@ -1,6 +1,8 @@
 
 extends Area2D
 
+signal destroyed(points: int)
+
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
 const IMAGE_ASTEROID_LARGE = preload("res://assets/asteroid_large.png")
 
@@ -17,8 +19,10 @@ const IMAGES_ASTEROID_SMALL = [
 var already_hit: bool = false
 var velocity: Vector2 = Vector2.ZERO
 var rotation_speed: float = 0.0
+var collision_grace: float = 0.0
 
 func _ready() -> void:
+	area_entered.connect(on_area_entered)
 	set_collision_shape_size()
 	set_random_speed_angle()
 	var asteroid_texture = IMAGE_ASTEROID_LARGE
@@ -38,14 +42,29 @@ func set_random_speed_angle() -> void:
 	rotation_speed = randf_range(-2.0, 2.0)
 
 func _physics_process(delta: float) -> void:
+	collision_grace = maxf(0.0, collision_grace - delta)
 	position += velocity * delta
 	rotation += rotation_speed * delta
+	# Recheck overlaps when fragment protection ends, even if no new entry occurs.
+	if collision_grace == 0.0 and not already_hit:
+		for area in get_overlapping_areas():
+			on_area_entered(area)
 
-func hit() -> void:
+func on_area_entered(area: Area2D) -> void:
+	if not area.is_in_group("asteroids"):
+		return
+	if already_hit or area.already_hit or collision_grace > 0.0 or area.collision_grace > 0.0:
+		return
+	hit(false)
+	area.hit(false)
+
+func hit(award_points: bool = true) -> void:
 	if already_hit:
 		return
 
 	already_hit = true
+	if award_points:
+		destroyed.emit(10 if small else 20)
 
 	if small:
 		queue_free()
@@ -56,9 +75,12 @@ func split() -> void:
 	for i in range(2):
 		var child = ASTEROID_SCENE.instantiate()
 		child.small = true
+		child.collision_grace = 0.35
+		var side := -1.0 if i == 0 else 1.0
+		var direction := velocity.normalized() if not velocity.is_zero_approx() else Vector2.RIGHT
+		child.position = position + direction.rotated(PI / 2.0) * side * 14.0
 
 		get_parent().add_child(child)
-		child.global_position = global_position
 
 		var angle = -0.6 if i == 0 else 0.6
 		child.velocity = velocity.rotated(angle) * 1.25

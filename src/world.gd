@@ -7,12 +7,37 @@ const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
 @export_range(0.1, 1.0, 0.05) var target_area_size: float = 0.5
 
 @onready var background: Sprite2D = $Background_Sprite2D
+@onready var score_label: Label = $HUD/Score/Value
+
+var score: int = 0
 
 
 func _ready() -> void:
+	child_entered_tree.connect(register_asteroid)
+	update_score_label()
 	resize_background()
 	$AsteroidSpawnTimer.timeout.connect(spawn_asteroid)
 	get_viewport().size_changed.connect(resize_background)
+
+
+func register_asteroid(node: Node) -> void:
+	if node.is_in_group("asteroids"):
+		node.connect("destroyed", add_score)
+
+
+func add_score(points: int) -> void:
+	score += points
+	update_score_label()
+
+
+func update_score_label() -> void:
+	var digits := str(score)
+	var formatted := ""
+	for i in range(digits.length()):
+		if i > 0 and (digits.length() - i) % 3 == 0:
+			formatted += ","
+		formatted += digits[i]
+	score_label.text = formatted
 
 
 func spawn_asteroid() -> void:
