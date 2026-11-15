@@ -7,7 +7,7 @@ func _ready() -> void:
 	auto_destroy_after_timeout()
 	
 func auto_destroy_after_timeout() -> void:
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(2.0, false).timeout
 	queue_free()
 
 func _draw() -> void:

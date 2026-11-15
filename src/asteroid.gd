@@ -2,6 +2,7 @@
 extends Area2D
 
 signal destroyed(points: int)
+signal break_sound_requested(is_small: bool)
 
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
 const EXPLOSION = preload("res://src/asteroid_explosion.gd")
@@ -56,14 +57,18 @@ func on_area_entered(area: Area2D) -> void:
 		return
 	if already_hit or area.already_hit or collision_grace > 0.0 or area.collision_grace > 0.0:
 		return
-	hit(false)
-	area.hit(false)
+	# One sound per collision; mixed-size impacts use the small-rock sound.
+	break_sound_requested.emit(small or area.small)
+	hit(false, false)
+	area.hit(false, false)
 
-func hit(award_points: bool = true) -> void:
+func hit(award_points: bool = true, play_sound: bool = true) -> void:
 	if already_hit:
 		return
 
 	already_hit = true
+	if play_sound:
+		break_sound_requested.emit(small)
 	var explosion = EXPLOSION.new()
 	explosion.fiery = award_points
 	explosion.large = not small

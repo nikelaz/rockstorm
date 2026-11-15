@@ -1,6 +1,8 @@
 extends Area2D
 
 signal died
+signal fired
+signal thrust_changed(active: bool)
 
 const BULLET_SCENE = preload("res://src/bullet.tscn")
 
@@ -24,6 +26,7 @@ func rotate_with_input(delta: float) -> void:
 func handle_acceleration(delta: float) -> void:
 	var thrusting := Input.is_action_pressed("ui_up")
 	engine_exhaust.emitting = thrusting
+	thrust_changed.emit(thrusting)
 	if thrusting:
 		var direction = Vector2.RIGHT.rotated(rotation)
 		velocity += direction * acceleration * delta
@@ -41,6 +44,7 @@ func update_position(delta: float) -> void:
 	position = new_position
 
 func shoot() -> void:
+	fired.emit()
 	var bullet = BULLET_SCENE.instantiate()
 
 	get_parent().add_child(bullet)
