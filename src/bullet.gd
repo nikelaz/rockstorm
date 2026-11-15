@@ -22,5 +22,5 @@ func _process(delta: float) -> void:
 
 func on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("asteroids"):
-		area.queue_free()
+		area.call("hit")
 		queue_free()

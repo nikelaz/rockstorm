@@ -6,7 +6,7 @@ const BULLET_SCENE = preload("res://src/bullet.tscn")
 
 @onready var sprite: Sprite2D = $Sprite2D
 
-@export var rotation_rate: float = 4.5
+@export var rotation_rate: float = 3.5
 @export var acceleration: float = 250.0
 @export var deceleration: float = 250.0
 var velocity: Vector2 = Vector2.ZERO
