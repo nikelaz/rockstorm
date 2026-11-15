@@ -1,5 +1,7 @@
 extends Area2D
 
+signal died
+
 const BULLET_SCENE = preload("res://src/bullet.tscn")
 
 @onready var engine_exhaust: GPUParticles2D = $EngineExhaust
@@ -8,6 +10,7 @@ const BULLET_SCENE = preload("res://src/bullet.tscn")
 @export var acceleration: float = 250.0
 @export var deceleration: float = 250.0
 var velocity: Vector2 = Vector2.ZERO
+var alive: bool = true
 
 func _ready() -> void:
 	global_position = get_viewport_rect().size / 2.0
@@ -60,6 +63,6 @@ func _process(delta: float) -> void:
 	handle_shooting()
 	
 func on_area_entered(area: Area2D) -> void:
-	# Temp: we should show a game menu to restart the game
-	if area.is_in_group("asteroids"):
-		get_tree().reload_current_scene.call_deferred()
+	if alive and area.is_in_group("asteroids"):
+		alive = false
+		died.emit()
