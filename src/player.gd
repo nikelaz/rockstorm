@@ -37,7 +37,7 @@ func update_position(delta: float) -> void:
 	new_position.y = clampf(new_position.y, 20.0, viewport_size.y - 20.0)
 	position = new_position
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	rotate_with_input(delta)
 	handle_acceleration(delta)
 	update_position(delta)
