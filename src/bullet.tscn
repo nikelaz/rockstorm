@@ -2,5 +2,13 @@
 
 [ext_resource type="Script" uid="uid://c8k32w0frcnar" path="res://src/bullet.gd" id="1_l4h0r"]
 
-[node name="Bullet" type="Node2D" unique_id=322481732]
+[sub_resource type="CircleShape2D" id="CircleShape2D_stymg"]
+radius = 5.0
+
+[node name="Bullet" type="Area2D" unique_id=812785524]
+collision_layer = 2
+collision_mask = 4
 script = ExtResource("1_l4h0r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=599912814]
+shape = SubResource("CircleShape2D_stymg")

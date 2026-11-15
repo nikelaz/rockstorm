@@ -2,5 +2,13 @@
 
 [ext_resource type="Script" uid="uid://crl33csvvlv2w" path="res://src/asteroid.gd" id="1_gpy83"]
 
-[node name="Asteroid" type="Area2D" unique_id=555770795]
+[sub_resource type="CircleShape2D" id="CircleShape2D_stymg"]
+radius = 25.0
+
+[node name="Asteroid" type="Area2D" unique_id=1331244253 groups=["asteroids"]]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("1_gpy83")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1421284967]
+shape = SubResource("CircleShape2D_stymg")

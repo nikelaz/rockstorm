@@ -4,6 +4,10 @@
 [ext_resource type="Script" uid="uid://gw2u36c3d1kb" path="res://src/world.gd" id="1_fj7yv"]
 [ext_resource type="Texture2D" uid="uid://cuts28j2giely" path="res://assets/ship_idle.png" id="3_0qwtu"]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_stymg"]
+radius = 19.0
+height = 68.0
+
 [sub_resource type="GDScript" id="GDScript_0qwtu"]
 script/source = "extends Timer
 
@@ -20,7 +24,8 @@ func _process(delta: float) -> void:
 [node name="World" type="Node2D" unique_id=1566183032]
 script = ExtResource("1_fj7yv")
 
-[node name="Player" type="Node2D" parent="." unique_id=350543370]
+[node name="Player" type="Area2D" parent="." unique_id=925038773]
+collision_mask = 4
 script = ExtResource("1_f3sb7")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=750615219]
@@ -28,6 +33,11 @@ rotation = 1.5707964
 scale = Vector2(0.06, 0.06)
 texture = ExtResource("3_0qwtu")
 offset = Vector2(0, 235)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1492218921]
+position = Vector2(-4, 0)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_stymg")
 
 [node name="AsteroidSpawnTimer" type="Timer" parent="." unique_id=271606059]
 wait_time = 2.0

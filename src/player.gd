@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 
 const SHIP_IDLE = preload("res://assets/ship_idle.png")
 const SHIP_BURNING = preload("res://assets/ship_burning.png")
@@ -14,6 +14,7 @@ var velocity: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	global_position = get_viewport_rect().size / 2.0
 	rotation = -PI / 2.0
+	area_entered.connect(on_area_entered)
 
 func rotate_with_input(delta: float) -> void:
 	var left_right_axis = Input.get_axis("ui_left", "ui_right")
@@ -59,3 +60,8 @@ func _physics_process(delta: float) -> void:
 
 func _process(delta: float) -> void:
 	handle_shooting()
+	
+func on_area_entered(area: Area2D) -> void:
+	# Temp: we should show a game menu to restart the game
+	if area.is_in_group("asteroids"):
+		get_tree().reload_current_scene.call_deferred()
