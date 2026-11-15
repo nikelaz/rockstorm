@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b14dex6qds2md"]
 
 [ext_resource type="Script" uid="uid://crl33csvvlv2w" path="res://src/asteroid.gd" id="1_gpy83"]
+[ext_resource type="Texture2D" uid="uid://ll0r63qdorj8" path="res://assets/asteroid_large.png" id="2_jtypx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_stymg"]
 radius = 25.0
@@ -12,3 +13,7 @@ script = ExtResource("1_gpy83")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1421284967]
 shape = SubResource("CircleShape2D_stymg")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1420318416]
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("2_jtypx")

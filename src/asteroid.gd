@@ -2,6 +2,12 @@
 extends Area2D
 
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
+const IMAGE_ASTEROID_LARGE = preload("res://assets/asteroid_large.png")
+
+const IMAGES_ASTEROID_SMALL = [
+	preload("res://assets/asteroid_small_1.png"),
+	preload("res://assets/asteroid_small_2.png")
+]
 
 @export var min_speed: float = 50.0
 @export var max_speed: float = 150.0
@@ -15,6 +21,10 @@ var rotation_speed: float = 0.0
 func _ready() -> void:
 	set_collision_shape_size()
 	set_random_speed_angle()
+	var asteroid_texture = IMAGE_ASTEROID_LARGE
+	if small:
+		asteroid_texture = IMAGES_ASTEROID_SMALL.pick_random()
+	$Sprite2D.texture = asteroid_texture
 
 func set_collision_shape_size() -> void:
 	var circle = CircleShape2D.new()
@@ -26,10 +36,6 @@ func set_random_speed_angle() -> void:
 	var speed = randf_range(min_speed, max_speed)
 	velocity = Vector2.from_angle(angle) * speed
 	rotation_speed = randf_range(-2.0, 2.0)
-
-func _draw() -> void:
-	var radius = 12.5 if small else 25.0
-	draw_circle(Vector2.ZERO, radius, Color.ORANGE)
 
 func _physics_process(delta: float) -> void:
 	position += velocity * delta

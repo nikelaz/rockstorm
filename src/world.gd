@@ -1,18 +1,75 @@
+
 extends Node2D
 
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
 
+@export var spawn_margin: float = 60.0
+@export_range(0.1, 1.0, 0.05) var target_area_size: float = 0.5
+
+@onready var background: Sprite2D = $Background_Sprite2D
+
+
 func _ready() -> void:
+	resize_background()
 	$AsteroidSpawnTimer.timeout.connect(spawn_asteroid)
+	get_viewport().size_changed.connect(resize_background)
+
 
 func spawn_asteroid() -> void:
+	var size = get_viewport_rect().size
+	var spawn_position: Vector2
+
+	# Pick a random edge outside the viewport
+	match randi_range(0, 3):
+		0: # Top
+			spawn_position = Vector2(
+				randf_range(0.0, size.x),
+				-spawn_margin
+			)
+		1: # Right
+			spawn_position = Vector2(
+				size.x + spawn_margin,
+				randf_range(0.0, size.y)
+			)
+		2: # Bottom
+			spawn_position = Vector2(
+				randf_range(0.0, size.x),
+				size.y + spawn_margin
+			)
+		3: # Left
+			spawn_position = Vector2(
+				-spawn_margin,
+				randf_range(0.0, size.y)
+			)
+
+	# Pick a random target in the central area
+	var padding = size * (1.0 - target_area_size) / 2.0
+
+	var target = Vector2(
+		randf_range(padding.x, size.x - padding.x),
+		randf_range(padding.y, size.y - padding.y)
+	)
+
+	# Calculate the direction toward that target
+	var direction = (target - spawn_position).normalized()
+
+	# Instantiate and configure the asteroid
 	var asteroid = ASTEROID_SCENE.instantiate()
 	add_child(asteroid)
 
-	asteroid.position = Vector2(300, 200)
+	asteroid.position = spawn_position
+	asteroid.velocity = direction * asteroid.velocity.length()
 
-func _draw() -> void:
-	draw_rect(
-		Rect2(Vector2.ZERO, get_viewport_rect().size),
-		Color(0.12, 0.16, 0.22)
+
+func resize_background() -> void:
+	var viewport_size = get_viewport_rect().size
+	var texture_size = background.texture.get_size()
+
+	var scale_factor = max(
+		viewport_size.x / texture_size.x,
+		viewport_size.y / texture_size.y
 	)
+
+	background.centered = false
+	background.position = Vector2.ZERO
+	background.scale = Vector2.ONE * scale_factor
