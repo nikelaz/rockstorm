@@ -8,7 +8,6 @@ var drift: Vector2 = Vector2.ZERO
 var age: float = 0.0
 var particles: Array[Dictionary] = []
 
-
 func _ready() -> void:
 	z_index = 5
 	var count := 30 if large else 18

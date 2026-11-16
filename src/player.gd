@@ -8,7 +8,7 @@ const BULLET_SCENE = preload("res://src/bullet.tscn")
 
 @onready var engine_exhaust: GPUParticles2D = $EngineExhaust
 
-@export var rotation_rate: float = 3.5
+@export var rotation_rate: float = 3
 @export var acceleration: float = 250.0
 @export var deceleration: float = 250.0
 var velocity: Vector2 = Vector2.ZERO
@@ -46,11 +46,8 @@ func update_position(delta: float) -> void:
 func shoot() -> void:
 	fired.emit()
 	var bullet = BULLET_SCENE.instantiate()
-
 	get_parent().add_child(bullet)
-
 	var direction = Vector2.RIGHT.rotated(global_rotation)
-
 	bullet.global_position = global_position + direction * 25.0
 	bullet.global_rotation = global_rotation
 

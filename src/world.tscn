@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://cuts28j2giely" path="res://assets/ship_idle.png" id="3_0qwtu"]
 [ext_resource type="Texture2D" uid="uid://ucvqgvfv2d2h" path="res://assets/background_space.png" id="4_t101k"]
 [ext_resource type="PackedScene" path="res://src/engine_exhaust.tscn" id="5_exhaust"]
-[ext_resource type="AudioStream" path="res://assets/atlasaudio-space-613336.mp3" id="6_music"]
-[ext_resource type="Script" path="res://src/game_audio.gd" id="7_audio"]
+[ext_resource type="AudioStream" uid="uid://c1grkhdvqnwsj" path="res://assets/atlasaudio-space-613336.mp3" id="6_music"]
+[ext_resource type="Script" uid="uid://b7yb6357qq1ov" path="res://src/game_audio.gd" id="7_audio"]
+[ext_resource type="Script" uid="uid://daemhgbbioavs" path="res://src/menu.gd" id="menu_script"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_stymg"]
 radius = 19.0
@@ -51,11 +52,11 @@ script = ExtResource("1_fj7yv")
 [node name="Background_Sprite2D" type="Sprite2D" parent="." unique_id=1815354785]
 texture = ExtResource("4_t101k")
 
-[node name="MenuMusic" type="AudioStreamPlayer" parent="."]
+[node name="MenuMusic" type="AudioStreamPlayer" parent="." unique_id=263764566]
 stream = ExtResource("6_music")
 volume_db = -20.0
 
-[node name="GameAudio" type="Node" parent="."]
+[node name="GameAudio" type="Node" parent="." unique_id=1623477091]
 script = ExtResource("7_audio")
 
 [node name="Gameplay" type="Node2D" parent="." unique_id=1477842773]
@@ -124,6 +125,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("menu_script")
 
 [node name="Content" type="VBoxContainer" parent="HUD/Menu" unique_id=1671484462]
 layout_mode = 0
@@ -163,14 +165,14 @@ theme_override_styles/pressed = SubResource("StyleBox_play_hover")
 theme_override_styles/hover = SubResource("StyleBox_play_hover")
 text = "PLAY"
 
-[node name="Sound" type="Button" parent="HUD/Menu/Content"]
+[node name="Sound" type="Button" parent="HUD/Menu/Content" unique_id=949049660]
 custom_minimum_size = Vector2(240, 44)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(0.78, 0.82, 0.93, 1)
-theme_override_colors/font_hover_color = Color(1, 0.95, 0.55, 1)
-theme_override_colors/font_pressed_color = Color(0.78, 0.82, 0.93, 1)
 theme_override_colors/font_focus_color = Color(1, 0.95, 0.55, 1)
+theme_override_colors/font_pressed_color = Color(0.78, 0.82, 0.93, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.55, 1)
 theme_override_fonts/font = SubResource("SystemFont_score")
 theme_override_font_sizes/font_size = 18
 toggle_mode = true
@@ -178,14 +180,14 @@ button_pressed = true
 text = "SOUND EFFECTS: ON"
 flat = true
 
-[node name="Music" type="Button" parent="HUD/Menu/Content"]
+[node name="Music" type="Button" parent="HUD/Menu/Content" unique_id=1639275488]
 custom_minimum_size = Vector2(240, 44)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(0.78, 0.82, 0.93, 1)
-theme_override_colors/font_hover_color = Color(1, 0.95, 0.55, 1)
-theme_override_colors/font_pressed_color = Color(0.78, 0.82, 0.93, 1)
 theme_override_colors/font_focus_color = Color(1, 0.95, 0.55, 1)
+theme_override_colors/font_pressed_color = Color(0.78, 0.82, 0.93, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.55, 1)
 theme_override_fonts/font = SubResource("SystemFont_score")
 theme_override_font_sizes/font_size = 18
 toggle_mode = true
@@ -193,7 +195,7 @@ button_pressed = true
 text = "MUSIC: ON"
 flat = true
 
-[node name="Quit" type="Button" parent="HUD/Menu/Content"]
+[node name="Quit" type="Button" parent="HUD/Menu/Content" unique_id=407123399]
 custom_minimum_size = Vector2(240, 44)
 layout_mode = 2
 mouse_default_cursor_shape = 2

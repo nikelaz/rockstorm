@@ -2,8 +2,6 @@
 extends Node2D
 
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
-const MENU_MUSIC_VOLUME_DB := -20.0
-const MUSIC_FADE_SECONDS := 0.9
 
 @export var spawn_margin: float = 60.0
 @export_range(0.1, 1.0, 0.05) var target_area_size: float = 0.5
@@ -12,47 +10,24 @@ const MUSIC_FADE_SECONDS := 0.9
 @onready var score_label: Label = $HUD/Score/Value
 @onready var gameplay: Node2D = $Gameplay
 @onready var player: Area2D = $Gameplay/Player
-@onready var menu: Control = $HUD/Menu
-@onready var final_score: Label = $HUD/Menu/Content/FinalScore
-@onready var play_button: Button = $HUD/Menu/Content/Play
-@onready var menu_music: AudioStreamPlayer = $MenuMusic
-@onready var sound_button: Button = $HUD/Menu/Content/Sound
-@onready var music_button: Button = $HUD/Menu/Content/Music
+@onready var menu = $HUD/Menu
 @onready var game_audio: Node = $GameAudio
 
 var score: int = 0
 var playing: bool = false
 var run_paused: bool = false
-var music_fade: Tween
-
 
 func _ready() -> void:
 	gameplay.child_entered_tree.connect(register_asteroid)
 	player.died.connect(game_over)
 	player.fired.connect(game_audio.play_shot)
 	player.thrust_changed.connect(game_audio.set_thrusting)
-	play_button.pressed.connect(on_play_pressed)
-	$HUD/Menu/Content/Quit.pressed.connect(func(): get_tree().quit())
-	sound_button.toggled.connect(set_sound_enabled)
-	music_button.toggled.connect(set_music_enabled)
-	var sound_enabled := not AudioServer.is_bus_mute(AudioServer.get_bus_index("Effects"))
-	sound_button.set_pressed_no_signal(sound_enabled)
-	set_sound_enabled(sound_enabled)
-	var music_enabled := not AudioServer.is_bus_mute(AudioServer.get_bus_index("Music"))
-	music_button.set_pressed_no_signal(music_enabled)
-	set_music_enabled(music_enabled)
-	menu_music.bus = "Music"
+	menu.play_requested.connect(on_play_pressed)
 	update_score_label()
 	resize_background()
 	$AsteroidSpawnTimer.timeout.connect(spawn_asteroid)
 	get_viewport().size_changed.connect(resize_background)
 	set_gameplay_active(false)
-	final_score.hide()
-	play_button.grab_focus()
-	menu_music.stream = menu_music.stream.duplicate()
-	menu_music.stream.loop = true
-	play_menu_music()
-
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and not event.is_echo() and playing:
@@ -62,13 +37,11 @@ func _input(event: InputEvent) -> void:
 		else:
 			pause_game()
 
-
 func on_play_pressed() -> void:
 	if run_paused:
 		resume_game()
 	else:
 		start_game()
-
 
 func pause_game() -> void:
 	if not playing or run_paused:
@@ -77,47 +50,16 @@ func pause_game() -> void:
 	get_tree().paused = true
 	game_audio.set_thrusting(false)
 	player.engine_exhaust.emitting = false
-	final_score.text = "SCORE\n" + score_label.text
-	final_score.show()
 	$HUD/Score.hide()
-	play_button.text = "RESUME"
-	menu.show()
-	play_button.grab_focus()
-
+	menu.show_score(score_label.text, "RESUME")
 
 func resume_game() -> void:
 	if not run_paused:
 		return
 	run_paused = false
 	get_tree().paused = false
-	menu.hide()
-	play_button.release_focus()
+	menu.close()
 	$HUD/Score.show()
-
-
-func set_sound_enabled(enabled: bool) -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("Effects"), not enabled)
-	sound_button.text = "SOUND EFFECTS: ON" if enabled else "SOUND EFFECTS: OFF"
-
-
-func set_music_enabled(enabled: bool) -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("Music"), not enabled)
-	music_button.text = "MUSIC: ON" if enabled else "MUSIC: OFF"
-
-
-func play_menu_music() -> void:
-	if music_fade:
-		music_fade.kill()
-	menu_music.volume_db = MENU_MUSIC_VOLUME_DB
-	menu_music.play(0.0)
-
-
-func fade_out_menu_music() -> void:
-	if music_fade:
-		music_fade.kill()
-	music_fade = create_tween()
-	music_fade.tween_property(menu_music, "volume_db", -60.0, MUSIC_FADE_SECONDS)
-	music_fade.tween_callback(menu_music.stop)
 
 
 func set_gameplay_active(active: bool) -> void:
@@ -143,7 +85,7 @@ func clear_run() -> void:
 func start_game() -> void:
 	run_paused = false
 	get_tree().paused = false
-	fade_out_menu_music()
+	menu.fade_out_music()
 	clear_run()
 	score = 0
 	update_score_label()
@@ -152,8 +94,7 @@ func start_game() -> void:
 	player.velocity = Vector2.ZERO
 	player.alive = true
 	playing = true
-	menu.hide()
-	play_button.release_focus()
+	menu.close()
 	set_gameplay_active(true)
 
 
@@ -167,13 +108,8 @@ func game_over() -> void:
 
 func show_game_over() -> void:
 	clear_run()
-	play_menu_music()
-	final_score.text = "SCORE\n" + score_label.text
-	final_score.show()
-	play_button.text = "PLAY AGAIN"
-	menu.show()
-	play_button.grab_focus()
-
+	menu.play_music()
+	menu.show_score(score_label.text, "PLAY AGAIN")
 
 func register_asteroid(node: Node) -> void:
 	if node.is_in_group("asteroids"):
