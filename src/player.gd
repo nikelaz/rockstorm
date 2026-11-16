@@ -1,6 +1,6 @@
 extends Area2D
 
-signal died
+signal died(impact_position: Vector2)
 signal fired
 signal thrust_changed(active: bool)
 
@@ -66,4 +66,17 @@ func _process(delta: float) -> void:
 func on_area_entered(area: Area2D) -> void:
 	if alive and area.is_in_group("asteroids"):
 		alive = false
-		died.emit()
+		died.emit(get_impact_position(area.global_position))
+
+
+func get_impact_position(asteroid_position: Vector2) -> Vector2:
+	# Project the incoming asteroid onto the rocket's capsule surface.
+	var collision: CollisionShape2D = $CollisionShape2D
+	var capsule: CapsuleShape2D = collision.shape
+	var incoming := collision.to_local(asteroid_position)
+	var half_segment := maxf(0.0, capsule.height * 0.5 - capsule.radius)
+	var nearest := Vector2(0.0, clampf(incoming.y, -half_segment, half_segment))
+	var normal := (incoming - nearest).normalized()
+	if normal.is_zero_approx():
+		normal = Vector2.RIGHT
+	return collision.to_global(nearest + normal * capsule.radius)

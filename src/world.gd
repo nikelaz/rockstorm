@@ -2,6 +2,7 @@
 extends Node2D
 
 const ASTEROID_SCENE = preload("res://src/asteroid.tscn")
+const PLAYER_IMPACT = preload("res://src/player_impact.gd")
 
 @export var spawn_margin: float = 60.0
 @export_range(0.1, 1.0, 0.05) var target_area_size: float = 0.5
@@ -98,12 +99,22 @@ func start_game() -> void:
 	set_gameplay_active(true)
 
 
-func game_over() -> void:
+func game_over(impact_position: Vector2) -> void:
 	if not playing or run_paused:
 		return
 	playing = false
+	play_player_impact.call_deferred(impact_position)
+
+
+func play_player_impact(impact_position: Vector2) -> void:
 	set_gameplay_active(false)
-	show_game_over.call_deferred()
+	player.show()
+	var impact = PLAYER_IMPACT.new()
+	impact.position = to_local(impact_position)
+	impact.direction = (impact_position - player.global_position).normalized()
+	impact.finished.connect(show_game_over)
+	# Keep the effect outside Gameplay so it runs while the defeated run is frozen.
+	add_child(impact)
 
 
 func show_game_over() -> void:
